@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardiões do Cuidado</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      background-color: #f0f8ff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      border-radius: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    button {
+      padding: 12px 20px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+    }
+    .hidden {
+      display: none;
+    }
+    img.character {
+      width: 120px;
+      height: auto;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <audio id="narracao" src="https://cdn.pixabay.com/audio/2022/03/15/audio_bf5b8a5a69.mp3"></audio>
+  <div class="container">
+    <div class="card" id="start-screen">
+      <h1>Guardiões do Cuidado</h1>
+      <p>Vamos aprender a usar a internet com segurança!</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Foxinho Firewall" class="character">
+      <br>
+      <button onclick="playNarracao(); nextScreen('question1')">Começar</button>
+    </div>
+
+    <div class="card hidden" id="question1">
+      <h2>Desafio 1</h2>
+      <img src="https://cdn-icons-png.flaticon.com/512/4463/4463446.png" alt="Link suspeito" class="character">
+      <p>Você ganhou um prêmio num link estranho. O que fazer?</p>
+      <button onclick="showFeedback(true)">Perguntar para um adulto</button>
+      <button onclick="showFeedback(false)">Clicar no link</button>
+    </div>
+
+    <div class="card hidden" id="feedback">
+      <h2 id="feedback-text"></h2>
+      <button onclick="nextScreen('question2')">Próximo desafio</button>
+    </div>
+
+    <div class="card hidden" id="question2">
+      <h2>Desafio 2</h2>
+      <img src="https://cdn-icons-png.flaticon.com/512/2421/2421910.png" alt="Chat desconhecido" class="character">
+      <p>Alguém que você não conhece falou com você no joguinho. O que fazer?</p>
+      <button onclick="showFeedback2(true)">Sair do jogo e avisar um adulto</button>
+      <button onclick="showFeedback2(false)">Conversar com a pessoa</button>
+    </div>
+
+    <div class="card hidden" id="feedback2">
+      <h2 id="feedback-text2"></h2>
+      <button onclick="nextScreen('bonus')">Fase Bônus</button>
+    </div>
+
+    <div class="card hidden" id="bonus">
+      <h2>Fase Bônus 🎉</h2>
+      <img src="https://cdn-icons-png.flaticon.com/512/2377/2377839.png" alt="Tablet" class="character">
+      <p>Você viu um vídeo estranho na internet. O que você faz?</p>
+      <button onclick="showBonusFeedback(true)">Contar para a professora ou responsável</button>
+      <button onclick="showBonusFeedback(false)">Assistir escondido</button>
+    </div>
+
+    <div class="card hidden" id="bonus-feedback">
+      <h2 id="bonus-text"></h2>
+      <button onclick="nextScreen('certificate')">Finalizar</button>
+    </div>
+
+    <div class="card hidden" id="certificate">
+      <h2>Parabéns!</h2>
+      <img src="https://cdn-icons-png.flaticon.com/512/4208/4208429.png" alt="Medalha" class="character">
+      <p>Você completou a jornada e agora é um Guardião do Cuidado! 🏅</p>
+      <input type="text" placeholder="Digite seu nome" id="name-input">
+      <button onclick="generateCertificate()">Gerar Certificado</button>
+      <p id="cert-text" class="hidden"></p>
+    </div>
+  </div>
+
+  <script>
+    function playNarracao() {
+      document.getElementById('narracao').play();
+    }
+
+    function nextScreen(id) {
+      document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function showFeedback(correct) {
+      nextScreen('feedback');
+      document.getElementById('feedback-text').textContent =
+        correct ? 'Muito bem! Sempre pergunte a um adulto!' : 'Ops! Nunca clique em links estranhos!';
+    }
+
+    function showFeedback2(correct) {
+      nextScreen('feedback2');
+      document.getElementById('feedback-text2').textContent =
+        correct ? 'Você fez o certo! Segurança em primeiro lugar!' : 'Cuidado! É melhor avisar um adulto!';
+    }
+
+    function showBonusFeedback(correct) {
+      nextScreen('bonus-feedback');
+      document.getElementById('bonus-text').textContent =
+        correct ? 'Excelente escolha! Isso é cuidar de si e dos outros!' : 'Hmm... Isso pode ser perigoso! Fale com alguém de confiança!';
+    }
+
+    function generateCertificate() {
+      const name = document.getElementById('name-input').value;
+      const certText = document.getElementById('cert-text');
+      if (name.trim()) {
+        certText.textContent = `Certificado: ${name} é um Guardião Oficial do Cuidado! 🎉`;
+        certText.classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
