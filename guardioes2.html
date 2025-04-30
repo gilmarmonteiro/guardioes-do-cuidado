@@ -71,7 +71,7 @@
     <div id="questions-container"></div>
 
     <div class="card hidden" id="certificate">
-      <img src="/home/gilmar/Downloads/CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
+      <img src="CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
       <h2>Parabéns!</h2>
       <img src="https://cdn-icons-png.flaticon.com/512/4208/4208429.png" alt="Medalha" class="question-image">
       <p>Você completou a jornada e agora é um Guardião do Cuidado! 🏅</p>
@@ -106,7 +106,7 @@
       questions.forEach((q, index) => {
         container.innerHTML += `
           <div class="card hidden" id="question${index}">
-            <img src="/home/gilmar/Downloads/CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
+            <img src="CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
             <h2>Desafio ${index + 1}</h2>
             <img src="${q[3]}" class="question-image" alt="Imagem relacionada">
             <p>${q[0]}</p>
@@ -114,7 +114,7 @@
             <button onclick="showFeedback(${index}, false)">✘ ${q[2]}</button>
           </div>
           <div class="card hidden" id="feedback${index}">
-            <img src="/home/gilmar/Downloads/CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
+            <img src="CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
             <h2 id="feedback-text${index}"></h2>
             <button onclick="nextQuestion(${index + 1})">${index + 1 < questions.length ? "Próximo desafio" : "Finalizar"}</button>
           </div>
