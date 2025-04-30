@@ -1,27 +1,40 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guardiões do Cuidado</title>
+  <title>Guardiões do Cuidado - CEIAB</title>
   <style>
     body {
       font-family: 'Comic Sans MS', cursive;
-      text-align: center;
-      background-color: #f0f8ff;
+      background: #e0f7fa;
       margin: 0;
       padding: 0;
+      text-align: center;
     }
     .container {
       padding: 20px;
     }
     .card {
-      background: #fff;
+      background: rgba(255, 255, 255, 0.95);
       margin: 20px auto;
       padding: 20px;
-      max-width: 600px;
+      max-width: 700px;
       border-radius: 20px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .top-logo {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+    .question-image {
+      width: 200px;
+      height: auto;
+      margin-bottom: 15px;
+      border-radius: 12px;
     }
     button {
       padding: 12px 20px;
@@ -33,69 +46,34 @@
       background-color: #4CAF50;
       color: white;
     }
+    button:hover {
+      background-color: #45a049;
+    }
     .hidden {
       display: none;
-    }
-    img.character {
-      width: 120px;
-      height: auto;
-      border-radius: 12px;
     }
   </style>
 </head>
 <body>
+
   <audio id="narracao" src="https://cdn.pixabay.com/audio/2022/03/15/audio_bf5b8a5a69.mp3"></audio>
+
   <div class="container">
     <div class="card" id="start-screen">
+      <img src="/home/gilmar/Downloads/CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
       <h1>Guardiões do Cuidado</h1>
       <p>Vamos aprender a usar a internet com segurança!</p>
-      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Foxinho Firewall" class="character">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Personagem" class="question-image">
       <br>
-      <button onclick="playNarracao(); nextScreen('question1')">Começar</button>
+      <button onclick="playNarracao(); nextQuestion(0)">Começar</button>
     </div>
 
-    <div class="card hidden" id="question1">
-      <h2>Desafio 1</h2>
-      <img src="https://cdn-icons-png.flaticon.com/512/4463/4463446.png" alt="Link suspeito" class="character">
-      <p>Você ganhou um prêmio num link estranho. O que fazer?</p>
-      <button onclick="showFeedback(true)">Perguntar para um adulto</button>
-      <button onclick="showFeedback(false)">Clicar no link</button>
-    </div>
-
-    <div class="card hidden" id="feedback">
-      <h2 id="feedback-text"></h2>
-      <button onclick="nextScreen('question2')">Próximo desafio</button>
-    </div>
-
-    <div class="card hidden" id="question2">
-      <h2>Desafio 2</h2>
-      <img src="https://cdn-icons-png.flaticon.com/512/2421/2421910.png" alt="Chat desconhecido" class="character">
-      <p>Alguém que você não conhece falou com você no joguinho. O que fazer?</p>
-      <button onclick="showFeedback2(true)">Sair do jogo e avisar um adulto</button>
-      <button onclick="showFeedback2(false)">Conversar com a pessoa</button>
-    </div>
-
-    <div class="card hidden" id="feedback2">
-      <h2 id="feedback-text2"></h2>
-      <button onclick="nextScreen('bonus')">Fase Bônus</button>
-    </div>
-
-    <div class="card hidden" id="bonus">
-      <h2>Fase Bônus 🎉</h2>
-      <img src="https://cdn-icons-png.flaticon.com/512/2377/2377839.png" alt="Tablet" class="character">
-      <p>Você viu um vídeo estranho na internet. O que você faz?</p>
-      <button onclick="showBonusFeedback(true)">Contar para a professora ou responsável</button>
-      <button onclick="showBonusFeedback(false)">Assistir escondido</button>
-    </div>
-
-    <div class="card hidden" id="bonus-feedback">
-      <h2 id="bonus-text"></h2>
-      <button onclick="nextScreen('certificate')">Finalizar</button>
-    </div>
+    <div id="questions-container"></div>
 
     <div class="card hidden" id="certificate">
+      <img src="/home/gilmar/Downloads/CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
       <h2>Parabéns!</h2>
-      <img src="https://cdn-icons-png.flaticon.com/512/4208/4208429.png" alt="Medalha" class="character">
+      <img src="https://cdn-icons-png.flaticon.com/512/4208/4208429.png" alt="Medalha" class="question-image">
       <p>Você completou a jornada e agora é um Guardião do Cuidado! 🏅</p>
       <input type="text" placeholder="Digite seu nome" id="name-input">
       <button onclick="generateCertificate()">Gerar Certificado</button>
@@ -104,41 +82,77 @@
   </div>
 
   <script>
+    const questions = [
+      ["Você ganhou um prêmio num link estranho. O que fazer?", "Perguntar para um adulto", "Clicar no link", "https://cdn-icons-png.flaticon.com/512/1048/1048940.png"],
+      ["Alguém desconhecido falou com você no joguinho. O que fazer?", "Sair do jogo e avisar um adulto", "Conversar com a pessoa", "https://cdn-icons-png.flaticon.com/512/1048/1048977.png"],
+      ["Você viu um vídeo estranho na internet. O que fazer?", "Contar para a professora ou responsável", "Assistir escondido", "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"],
+      ["Seu amigo pediu sua senha. O que você faz?", "Não contar", "Contar porque é amigo", "https://cdn-icons-png.flaticon.com/512/4202/4202843.png"],
+      ["Um site pediu seu nome e endereço. Você:", "Conta para um adulto", "Preenche sem pensar", "https://cdn-icons-png.flaticon.com/512/747/747376.png"],
+      ["Quer baixar um novo joguinho. Você:", "Pede ajuda para um adulto", "Baixa sozinho", "https://cdn-icons-png.flaticon.com/512/1048/1048929.png"],
+      ["Recebeu mensagem de um estranho. Você:", "Ignora e avisa um adulto", "Responde para fazer amizade", "https://cdn-icons-png.flaticon.com/512/1057/1057084.png"],
+      ["Seu tablet travou. Você:", "Chama um adulto", "Clica em todos os botões", "https://cdn-icons-png.flaticon.com/512/2709/2709689.png"],
+      ["Alguém pede uma foto sua. Você:", "Diz não e avisa um adulto", "Manda sem contar para ninguém", "https://cdn-icons-png.flaticon.com/512/3188/3188471.png"],
+      ["Viu algo estranho na internet. Você:", "Conta para um adulto", "Fica curioso e continua", "https://cdn-icons-png.flaticon.com/512/2847/2847555.png"],
+      ["Quer conversar online. Você fala com:", "Pessoas que conhece pessoalmente", "Qualquer um", "https://cdn-icons-png.flaticon.com/512/2921/2921826.png"],
+      ["Seu colega mostra um site novo. Você:", "Pergunta para um adulto", "Acessa escondido", "https://cdn-icons-png.flaticon.com/512/2921/2921801.png"],
+      ["Quer criar uma senha. Você faz:", "Senha secreta e difícil", "Senha fácil, tipo 1234", "https://cdn-icons-png.flaticon.com/512/456/456212.png"],
+      ["Encontrou algo que te assustou. Você:", "Conta para um adulto", "Guarda segredo", "https://cdn-icons-png.flaticon.com/512/4202/4202849.png"],
+      ["Pediu ajuda mas ninguém ouviu. Você:", "Procura outro adulto", "Desiste e continua sozinho", "https://cdn-icons-png.flaticon.com/512/4775/4775459.png"]
+    ];
+
+    const container = document.getElementById('questions-container');
+
+    function buildQuestions() {
+      questions.forEach((q, index) => {
+        container.innerHTML += `
+          <div class="card hidden" id="question${index}">
+            <img src="/home/gilmar/Downloads/CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
+            <h2>Desafio ${index + 1}</h2>
+            <img src="${q[3]}" class="question-image" alt="Imagem relacionada">
+            <p>${q[0]}</p>
+            <button onclick="showFeedback(${index}, true)">✔ ${q[1]}</button>
+            <button onclick="showFeedback(${index}, false)">✘ ${q[2]}</button>
+          </div>
+          <div class="card hidden" id="feedback${index}">
+            <img src="/home/gilmar/Downloads/CEIAB_image.png" alt="CEIAB Logo" class="top-logo">
+            <h2 id="feedback-text${index}"></h2>
+            <button onclick="nextQuestion(${index + 1})">${index + 1 < questions.length ? "Próximo desafio" : "Finalizar"}</button>
+          </div>
+        `;
+      });
+    }
+
     function playNarracao() {
       document.getElementById('narracao').play();
     }
 
-    function nextScreen(id) {
+    function nextQuestion(index) {
       document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
+      if (index < questions.length) {
+        document.getElementById('question' + index).classList.remove('hidden');
+      } else {
+        document.getElementById('certificate').classList.remove('hidden');
+      }
     }
 
-    function showFeedback(correct) {
-      nextScreen('feedback');
-      document.getElementById('feedback-text').textContent =
-        correct ? 'Muito bem! Sempre pergunte a um adulto!' : 'Ops! Nunca clique em links estranhos!';
-    }
-
-    function showFeedback2(correct) {
-      nextScreen('feedback2');
-      document.getElementById('feedback-text2').textContent =
-        correct ? 'Você fez o certo! Segurança em primeiro lugar!' : 'Cuidado! É melhor avisar um adulto!';
-    }
-
-    function showBonusFeedback(correct) {
-      nextScreen('bonus-feedback');
-      document.getElementById('bonus-text').textContent =
-        correct ? 'Excelente escolha! Isso é cuidar de si e dos outros!' : 'Hmm... Isso pode ser perigoso! Fale com alguém de confiança!';
+    function showFeedback(index, correct) {
+      document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+      document.getElementById('feedback' + index).classList.remove('hidden');
+      document.getElementById('feedback-text' + index).textContent = correct
+        ? "Muito bem! Você está seguro!"
+        : "Cuidado! Melhor pedir ajuda a um adulto!";
     }
 
     function generateCertificate() {
-      const name = document.getElementById('name-input').value;
+      const name = document.getElementById('name-input').value.trim();
       const certText = document.getElementById('cert-text');
-      if (name.trim()) {
+      if (name) {
         certText.textContent = `Certificado: ${name} é um Guardião Oficial do Cuidado! 🎉`;
         certText.classList.remove('hidden');
       }
     }
+
+    buildQuestions();
   </script>
 </body>
 </html>
